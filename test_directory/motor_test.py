@@ -3,8 +3,8 @@ import RPi.GPIO as GPIO
 class motor():
     def __init__(self, PWMpin, DIRpin):
         self.speed = 0
-        self.FORWARD = 1
-        self.BACK = 0
+        self.FORWARD = 100
+        self.BACK = -100
         self.dir = self.FORWARD
         GPIO.setup(PWMpin, GPIO.OUT)
         GPIO.setup(DIRpin, GPIO.OUT)
@@ -16,12 +16,19 @@ class motor():
     def setSpeed(self, speed):
         self.speed = speed
         self.PWMpin1.ChangeDutyCycle(speed)
+        if(speed > 0):
+            self.dir = self.FORWARD
+            setDirection(True, False)
+        if(speed < 0):
+            self.dir = self.BACK
+            setDirection(False, True)
     
     def setDirection(self, FORWARD, BACK):
         if(FORWARD == True):
             self.dir = self.FORWARD
         else:
             self.dir = self.BACK
+
         GPIO.output(self.DIRpin, GPIO.LOW if self.dir == self.FORWARD else GPIO.HIGH)
             
 GPIO.setwarnings(False)
